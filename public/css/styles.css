@@ -1,0 +1,11 @@
+/* Adicione isso ao seu arquivo styles.css ou crie um arquivo separado para estilos */
+.navbar-nav .nav-link {
+    margin-right: 5px;
+    margin-left: 15px;
+}
+/* Estilizando a barra de navegação */
+.navbar.navbar-expand.navbar-dark.bg-dark.barra {
+    background-color: rgba(255, 255, 255, 0.55) !important; /* !important para garantir precedência */
+    /* Adicione outros estilos conforme necessário */
+}
+

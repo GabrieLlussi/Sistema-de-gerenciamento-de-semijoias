@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+
+<style>
+    body {
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    .card {
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card img {
+        width: 100%;
+        height: auto;
+    }
+
+    .card-body {
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+        .card img {
+        width: 100%;
+        height: 400px; /* Defina a altura desejada para todas as imagens */
+        object-fit: cover; /* Isso garante que a imagem cubra totalmente a área designada */
+    }
+
+    .btn-info {
+        background-color: #4CAF50;
+        color: white;
+        margin-right: 10px;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="number"] {
+        width: 70px;
+    }
+
+</style>
+
+
+
+
+<h1>{{titulo}}</h1>
+{% if is_granted('ROLE_ADMIN') %}
+<a href ="{{ path('produto/adicionar') }}" class="btn btn-success" style="margin-bottom: 20px; background-color: #000080; border-color: #000080;">Adicionar</a>
+{% endif %}
+{#<div class="col-md-2">
+    {{ form_start(form, {'method': 'GET'}) }}
+    {{ form_row(form.categoria) }}
+    {{ form_row(form.Filtrar) }}
+    {{ form_end(form) }}
+</div>
+<p>#}
+<table class="table">
+    <tbody>
+        <div class="container">
+            <div class="row">
+                {% for produto in produto %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="data:image/png;base64,{{ produto.img }}" alt="{{ produto.nome }}" class="card-img-top">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title">{{produto.nome}}</h5>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('produto/editar', {id: produto.id}) }}" class="btn btn-info btn-sm" style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color white;">Editar</a>
+                                {% endif %}
+                            </div>
+                            <p class="card-text">{{produto.descricao}}</p>
+                            <p class="card-text">R$ {{produto.valor}}</p>
+                            <p class="card-text">Unid: {{produto.quantidade}}</p>
+
+                            <div class="btn-group" role="group">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <form action="{{ path('adicionar_quantidade_produto', { 'id': produto.id, 'quantidade': 1 }) }}" method="post">
+                                        <label for="quantidade{{ produto.id }}"></label>
+                                        <input type="number" name="quantidade{{ produto.id }}" id="quantidade{{ produto.id }}" value="1" min="1" class="form-control input-sm">
+                                        <button type="submit" class="btn btn-success btn-sm">Adicionar</button>
+                                    </form>
+                                
+                                    <form action="{{ path('remover_quantidade_produto', { 'id': produto.id, 'quantidade': 1 }) }}" method="post">
+                                        <label for="quantidade{{ produto.id }}"></label>
+                                        <input type="number" name="quantidade{{ produto.id }}" id="quantidade{{ produto.id }}" value="1" min="1" class="form-control input-sm">
+                                        <button type="submit" class="btn btn-danger btn-sm">Remover</button>
+                                    </form>
+                                {% endif %}
+
+                                {% if not is_granted('ROLE_ADMIN') %}
+                                    {% if produto.quantidade == 0 %}
+                                        <h5> Produto Indisponível </h5>
+                                    {% else %}
+                                        <form action="{{ path('adicionar_carrinho', { 'idProduto': produto.id, 'quantidade': 1 }) }}" method="post">
+                                            <label for="quantidade{{ produto.id }}"></label>
+                                            <input type="number" name="quantidade{{ produto.id }}" id="quantidade{{ produto.id }}" value="1" min="1" class="form-control input-sm">
+                                            <button type="submit" class="btn btn-success btn-sm">Adicionar ao Carrinho</button>
+                                        </form>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </tbody>
+</table>
+{% endblock %}

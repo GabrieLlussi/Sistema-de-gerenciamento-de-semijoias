@@ -1,0 +1,246 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+
+<style>
+    .table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Adiciona reticências (...) para indicar texto truncado */
+        white-space: nowrap; /* Impede a quebra de linha dentro da célula */
+    }
+
+    .table th {
+        background-color: #f2f2f2;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody tr:hover {
+        background-color: #e5e5e5;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+        /* Adiciona um fundo de destaque para o cabeçalho principal */
+    .jumbotron {
+        background-color: #4caf50;
+        color: black;
+        padding: 20px;
+        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+</style>
+
+
+
+<div class="jumbotron">
+    <h1 class="display-4 text-center">Lista de Usuários</h1>
+    <p class="lead text-center">Gerencie seus usuários de forma eficiente</p>
+</div>
+
+<a href ="{{ path('register') }}" class="btn btn-success" style="margin-bottom: 10px;">Adicionar</a>
+<h2>Administradores</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>Nº</td>
+            <td>Nome</td>
+            <td>Email</td>
+            <td>Endereço</td>
+            <td>Telefone</td>
+            <td>CPF</td>
+            <td>Região</td>
+            <td>Estado</td>
+            <td>Alterar status</td>
+            <td>Editar</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuario %}
+            {% if 'ROLE_ADMIN' in usuario.roles %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.endereco }}</td>
+                    <td>{{ usuario.telefone }}</td>
+                    <td>{{ usuario.cpf }}</td>
+                    <td>{{ usuario.regiao.nome }}</td>
+                    <td>
+                            {% if usuario.estadoAtual == 'Ativo' %}
+                                <span class="text-success">Ativo</span>
+                            {% else %}
+                                <span class="text-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                    <td>
+                        <form method="post" action="{{ path('register/estado', { 'id': usuario.id }) }}">
+                            <button type="submit" value="estado" class="btn btn-primary">Atualizar estado</button>
+                        </form>
+                    </td>
+                    <td>
+                        {#<a href={{ path('register/editar', {id: usuario.id}) }} class="btn btn-info" style="margin-right: 10px;">Editar</a>#}
+                        {#<a href={{ path('register/excluir', {id: usuario.id}) }} class="btn btn-danger">Excluir</a>#}
+                        <a href="{{ path('register/editar', { 'id': usuario.id }) }}" class="btn btn-info"  style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color: white;">
+                        <i class="bi bi-pencil-fill"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    <h2>Usuários Ativos</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>Nº</td>
+            <td>Nome</td>
+            <td>Email</td>
+            <td>Endereço</td>
+            <td>Telefone</td>
+            <td>CPF</td>
+            <td>Região</td>
+            <td>Comissão</td>
+            <td>Limite</td>
+            <td>Estado</td>
+            <td>Alterar status</td>
+            <td>Editar</td>
+            <td>Carrinho</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuario %}
+            {% if usuario.estadoAtual == 'Ativo' and usuario.roles|length == 1 and 'ROLE_USER' in usuario.roles %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.endereco }}</td>
+                    <td>{{ usuario.telefone }}</td>
+                    <td>{{ usuario.cpf }}</td>
+                    <td>{{ usuario.regiao.nome }}</td>
+                    <td>{{ usuario.comissao }} %</td>
+                    <td>{{ usuario.limite }}</td>
+                    <td>
+                            {% if usuario.estadoAtual == 'Ativo' %}
+                                <span class="text-success">Ativo</span>
+                            {% else %}
+                                <span class="text-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                    <td>
+                        <form method="post" action="{{ path('register/estado', { 'id': usuario.id }) }}">
+                            <button type="submit" value="estado" class="btn btn-primary">Atualizar estado</button>
+                        </form>
+                    </td>
+                    <td>
+                        {#<a href={{ path('register/editar', {id: usuario.id}) }} class="btn btn-info" style="margin-right: 10px;">Editar</a>#}
+                        {#<a href={{ path('register/excluir', {id: usuario.id}) }} class="btn btn-danger">Excluir</a>#}
+                        <a href="{{ path('register/editar', { 'id': usuario.id }) }}" class="btn btn-info"  style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color: white;">
+                        <i class="bi bi-pencil-fill"></i>
+                        </a>
+                    </td>
+                    {% if usuario.estadoAtual == 'Ativo' %}
+                            <td>
+                                <a href="{{ path('verificar_carrinho', { 'id': usuario.id }) }}" class="btn btn-success">
+                                <i class="bi bi-cart"></i>
+                                </a>
+                            </td>
+                    {% endif %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+
+    <h2>Usuários Inativos</h2>
+
+    {% set hasInactiveUsers = false %}
+
+    {% for usuario in usuario %}
+        {% if usuario.estadoAtual == 'Inativo' %}
+            {% set hasInactiveUsers = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if hasInactiveUsers %}
+        <table class="table">
+        <thead>
+        <tr>
+            <td>Nº</td>
+            <td>Nome</td>
+            <td>Email</td>
+            <td>Endereço</td>
+            <td>Telefone</td>
+            <td>CPF</td>
+            <td>Região</td>
+            <td>Comissão</td>
+            <td>Limite</td>
+            <td>Estado</td>
+            <td>Alterar Status</td>
+            <td>Editar</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuario %}
+            {% if usuario.estadoAtual == 'Inativo' %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.nome }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>{{ usuario.endereco }}</td>
+                    <td>{{ usuario.telefone }}</td>
+                    <td>{{ usuario.cpf }}</td>
+                    <td>{{ usuario.regiao.nome }}</td>
+                    <td>{{ usuario.comissao }} %</td>
+                    <td>{{ usuario.limite }}</td>
+                    <td>
+                            {% if usuario.estadoAtual == 'Ativo' %}
+                                <span class="text-success">Ativo</span>
+                            {% else %}
+                                <span class="text-danger">Inativo</span>
+                            {% endif %}
+                        </td>
+                    <td>
+                        <form method="post" action="{{ path('register/estado', { 'id': usuario.id }) }}">
+                            <button type="submit" value="estado" class="btn btn-primary">Atualizar estado</button>
+                        </form>
+                    </td>
+                    <td>
+                        {#<a href={{ path('register/editar', {id: usuario.id}) }} class="btn btn-info" style="margin-right: 10px;">Editar</a>#}
+                        {#<a href={{ path('register/excluir', {id: usuario.id}) }} class="btn btn-danger">Excluir</a>#}
+                        
+                        <a href={{ path('register/editAdmin', {id: usuario.id}) }} class="btn btn-info"  style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color: white;">
+                        <i class="bi bi-pencil-fill"></i>
+                        </a>
+                    </td>
+                    {% if usuario.estadoAtual == 'Ativo' %}
+                            <td>
+                                <a href="{{ path('/verificar_carrinho', { 'id': usuario.id }) }}" class="btn btn-success">Vizualizar carrinho</a>
+                            </td>
+                    {% endif %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>Nenhum usuário inativo encontrado</p>
+    {% endif %}
+
+{% endblock %}

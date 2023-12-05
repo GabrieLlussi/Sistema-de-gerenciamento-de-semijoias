@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+<h1>{{titulo}}</h1>
+<h5>{{subTitulo}}</h5>
+{{ form_errors(form) }}
+
+
+    {{ form_start(form) }}
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.nome) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.plainPassword, {
+                    label: 'Senha'
+                    }) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.endereco) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.telefone, {'attr': {'class': 'telefone-mask', 'placeholder': '(  ) 9 9999-9999'}}) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.cpf, {'attr': {'class': 'cpf-mask', 'placeholder': '000.000.000-00'}}) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.agreeTerms) }}
+                </div>
+            </div>
+        </div>
+
+
+       
+
+
+        <p> {{ msg }} </p>
+
+
+    {{ form_end(form) }}
+<p> {{ msg }} </p>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href ="{{ path('register/index') }}" class="btn btn-primary">Cancelar alterações</a>
+    {% endif %}
+    {% if not is_granted('ROLE_ADMIN') %}
+        <a href ="{{ path('perfil') }}" class="btn btn-primary">Cancelar alterações</a>
+    {% endif %}
+{% endblock %}

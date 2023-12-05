@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+<h1>{{titulo}}</h1>
+{{ form_start(form) }}
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.nome) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.descricao) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.valor) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.categoria) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.img) }}
+                </div>
+            </div>
+        </div>
+
+
+    <p> {{ msg }} </p>
+
+
+    {{ form_end(form) }}
+<p> {{ msg }} </p>
+<a href ="{{ path('produto') }}" class="btn btn-primary">Voltar ao menu</a>
+{% endblock %}

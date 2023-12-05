@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    background-color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 20px; /* Adiciona margem inferior para separar da tabela */
+}
+
+.content-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+/* Cor do botão Filtrar */
+button {
+    background-color: #28a745; /* ou #4CAF50 */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838; /* ou #45a049 */
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+</style>
+
+<form method="get" action="{{ path('dashboard') }}">
+    <label for="dataInicio">Data Início:</label>
+    <input type="date" id="dataInicio" name="dataInicio">
+
+    <label for="dataFim">Data Fim:</label>
+    <input type="date" id="dataFim" name="dataFim">
+
+    <button type="submit" style="background-color: #28a745;">Filtrar</button>
+</form>
+<h2> Dashboard dos usuários</h2><br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome do Usuário</th>
+                <th>Total Valor das Vendas</th>
+                <th>Total Quantidade Vendida</th>
+                <th>Média Valor das Vendas</th>
+                <th>Média de valor por carrinho</th>
+                <th>Média Itens por Carrinho</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in dashboardData %}
+                <tr>
+                    <td>{{ data.nome }}</td>
+                    <td>R$ {{ data.totalValorVendas | number_format(2, ',', '.') }}</td>
+                    <td>{{ data.totalQuantidadeVendida | number_format(0, ',', '.') }} unidades</td>
+                    <td>R$ {{ data.mediaValorVendas | number_format(2, ',', '.') }}</td>
+                    <td>R$ {{ data.mediaQuantidadeVendida | number_format(2, ',', '.') }}</td>
+                    <td>{{ data.mediaItensPorCarrinho | number_format(2, ',', '.') }} unidades</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2> Dashboard dos produtos</h2><br>
+        <table class="table">
+        <thead>
+            <tr>
+                <th>Nome do Produto</th>
+                <th>Total Quantidade Vendida</th>
+                <th>Total Valor das Vendas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produtoMaisVendido in produtosMaisVendidos %}
+                <tr>
+                    <td>{{ produtoMaisVendido.nome }}</td>
+                    <td>{{ produtoMaisVendido.totalQuantidadeVendida | number_format(0, ',', '.') }} unidades</td>
+                    <td>R$ {{ produtoMaisVendido.totalValorVendas | number_format(2, ',', '.') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

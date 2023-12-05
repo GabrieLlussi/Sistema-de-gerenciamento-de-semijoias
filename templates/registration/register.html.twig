@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block stylesheets %}
+    {# Inclua os estilos necessários aqui, se houver #}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ titulo }}</h1>
+    <h5>{{ subTitulo }}</h5>
+
+    {{ form_errors(form) }}
+
+    {{ form_start(form) }}
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.nome) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.email) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.plainPassword, {
+                    label: 'Senha'
+                    }) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.endereco) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.telefone, {'attr': {'class': 'telefone-mask', 'placeholder': '(  ) 9 9999-9999'}}) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.cpf, {'attr': {'class': 'cpf-mask', 'placeholder': '000.000.000-00'}}) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.regiao) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.comissao) }}
+                </div>
+                <div class="col">
+                    {{ form_row(form.limite) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-left">
+            <div class="row align-items-start">
+                <div class="col">
+                    {{ form_row(form.agreeTerms) }}
+                </div>
+            </div>
+        </div>
+
+        
+
+        <p> {{ msg }} </p>
+
+        <button type="submit" class="btn btn-success">{{ button }}</button>
+        <br><br>
+    {{ form_end(form) }}
+    <a href ="{{ path('register/index') }}" class="btn btn-primary">Voltar para o menu</a>
+
+    {# Inclua os scripts necessários no final do corpo #}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.1.1/vanilla-masker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Adicione a máscara dinâmica ao campo de CPF
+            VMasker(document.querySelector('.cpf-mask')).maskPattern("999.999.999-99");
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+        // Adicione a máscara dinâmica ao campo de telefone
+        VMasker(document.querySelector('.telefone-mask')).maskPattern('(99) 9 9999-9999');
+        });
+    </script>
+{% endblock %}

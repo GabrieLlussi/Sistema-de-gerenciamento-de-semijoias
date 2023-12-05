@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+<h1>{{titulo}}</h1><br><br>
+
+<table class="table table-bordered table-striped shadow">
+    <thead>
+        <tr>
+            <td>Nº</td>
+            <td>Nome da região</td>
+            <td>Descrição</td>
+            <td>Ações</td>
+        </tr>
+    </thead>
+    <tbody>
+                <style>
+        h1 {
+            text-align: center;
+        }
+    </style>
+        {% for regiao in regiao %}
+            <tr>
+                <td>{{ regiao.id }}</td>
+                <td>{{ regiao.nome }}</td>
+                <td>{{ regiao.descricao }}</td>
+                <td>
+                    <a href={{ path('regiao/editar', {id: regiao.id}) }} class="btn btn-info" style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color white;">
+                    <i class="bi bi-pencil-fill"></i>
+                    </a>
+                    <a href={{ path('regiao/excluir', {id: regiao.id}) }} class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href = "{{ path('regiao/adicionar') }}" class="btn btn-success btn-lg" style="margin-bottom: 20px; background-color: #000080; border-color: #000080;">Adicionar</a><br>  
+{% endblock %}

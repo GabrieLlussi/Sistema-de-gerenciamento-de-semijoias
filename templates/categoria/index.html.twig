@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block body %}
+<h1>{{titulo}}</h1><br><br>
+
+<table class="table table-bordered table-striped shadow">
+    <thead>
+        <tr>
+            <td style="width: 10%;">Nº</td>
+            <td style="width: 50%;">Descrição</td>
+            <td style="width: 20%;">Ações</td>
+        </tr>
+    </thead>
+    <tbody>
+                <style>
+        h1 {
+            text-align: center;
+        }
+    </style>
+        {% for categoria in categoria %}
+            <tr>
+                <td>{{ categoria.id }}</td>
+                <td>{{ categoria.Nome }}</td>
+                <td>
+                    <a href="{{ path('categoria/editar', {id: categoria.id}) }}" class="btn btn-info" style="margin-right: 10px; background-color: #ff8c00; border-color: #ff8c00; color: white;">
+                    <i class="bi bi-pencil-fill"></i>
+                    </a>
+                    <a href="{{ path('categoria/excluir', {id: categoria.id}) }}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href ="{{ path('categoria/adicionar') }}" class="btn btn-success btn-lg" style="margin-bottom: 20px; background-color: #000080; border-color: #000080;">Adicionar</a>
+{% endblock %}

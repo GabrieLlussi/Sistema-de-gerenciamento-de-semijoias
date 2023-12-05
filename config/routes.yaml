@@ -1,0 +1,160 @@
+categoria:
+    path: /categoria/index
+    controller: App\Controller\CategoriaController::index
+
+categoria/editar:
+    path: /categoria/editar/{id}
+    controller: App\Controller\CategoriaController::editar
+
+categoria/excluir:
+    path: /categoria/excluir/{id}
+    controller: App\Controller\CategoriaController::excluir
+
+categoria/adicionar:
+    path: /categoria/adicionar
+    controller: App\Controller\CategoriaController::adicionar
+
+produto:
+    path: produto
+    controller: App\Controller\ProdutoController::index
+    methods: ['GET']
+
+produto/adicionar:
+    path: produto/adicionar
+    controller: App\Controller\ProdutoController::adicionar
+
+produto/editar:
+    path: produto/editar/{id}
+    controller: App\Controller\ProdutoController::editar
+
+produto/excluir:
+    path: produto/excluir/{id}
+    controller: App\Controller\ProdutoController::excluir
+
+produto/details:
+    path: produto/details/{id}
+    controller: App\Controller\ProdutoController::details
+
+adicionar_quantidade_produto:
+    path: /produto/adicionar_quantidade/{id}/{quantidade}
+    controller: App\Controller\ProdutoController::adicionarQuantidade
+
+remover_quantidade_produto:
+    path: /produto/remover_quantidade/{id}/{quantidade}
+    controller: App\Controller\ProdutoController::removerQuantidade
+
+regiao:
+    path: regiao
+    controller: App\Controller\RegiaoController::index
+
+regiao/adicionar:
+    path: regiao/adicionar
+    controller: App\Controller\RegiaoController::adicionar
+
+regiao/editar:
+    path: regiao/editar/{id}
+    controller: App\Controller\RegiaoController::editar
+
+regiao/excluir:
+    path: regiao/excluir/{id}
+    controller: App\Controller\RegiaoController::excluir
+
+login:
+    path: login
+    controller: App\Controller\LoginController::index
+
+app_logout:
+    path: /logout
+    methods: GET
+
+register:
+    path: register
+    controller: App\Controller\RegistrationController::register
+
+register/index:
+    path: register/index
+    controller: App\Controller\RegistrationController::index
+
+register/editar:
+    path: register/editar/{id}
+    controller: App\Controller\RegistrationController::editar
+
+register/excluir:
+    path: register/excluir/{id}
+    controller: App\Controller\RegistrationController::excluir
+
+register/estado:
+    path: register/estado/{id}
+    controller: App\Controller\RegistrationController::estado
+
+register/editUser:
+    path: register/editUser/{id}
+    controller: App\Controller\RegistrationController::editUser
+
+register/editAdmin:
+    path: register/editAdmin/{id}
+    controller: App\Controller\RegistrationController::editAdmin
+
+home:
+    path: home
+    controller: App\Controller\HomeController::home
+
+perfil:
+    path: perfil
+    controller: App\Controller\HomeController::perfil
+
+carrinho:
+    path: carrinho
+    controller: App\Controller\CarrinhoController::index
+
+verificar_carrinho:
+    path: /carrinho/verificar/{id}/
+    controller: App\Controller\CarrinhoController::verificar
+
+adicionar_carrinho:
+    path: /carrinho/adicionar/{idProduto}/{quantidade}
+    controller: App\Controller\CarrinhoController::adicionar
+
+remover_carrinho:
+    path: /carrinho/remover/{idProduto}/{quantidade}
+    controller: App\Controller\CarrinhoController::remover
+
+removertodos_carrinho:
+    path: /carrinho/removertodos
+    controller: App\Controller\CarrinhoController::removerTodos
+
+remover_carrinho_adm:
+    path: /carrinho/remover/{idCarrinho}/{idProduto}/{quantidade}
+    controller: App\Controller\CarrinhoController::removerAdm
+
+definir_status:
+    path: /carrinho/definir_status/{id}/
+    controller: App\Controller\CarrinhoController::definirStatus
+
+definir_status_adm:
+    path: /carrinho/definir_status_adm/{id}/
+    controller: App\Controller\CarrinhoController::definirStatusAdm
+
+vender_produto:
+    path: /carrinho/vender/{id}/{quantidade}
+    controller: App\Controller\CarrinhoController::vender
+
+devolver_produto:
+    path: /carrinho/devolver/{id}/{quantidade}
+    controller: App\Controller\CarrinhoController::devolver
+
+registroProdutos:
+    path: /registroProdutos
+    controller: App\Controller\ProdutoController::registroProdutos
+
+alterarNome:
+    path: /alterarDados/nome
+    controller: App\Controller\RegistrationController::editarNome
+
+forgotPassword:
+    path: /esqueci-minha-senha
+    controller: App\Controller\SecurityController::forgotPassword
+
+dashboard:
+    path: /dashboard
+    controller: App\Controller\DashboardController::index

@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Entrar{% endblock %}
+
+{% block body %}
+
+<body style="height: 100vh; background-color: #a0aab4; display:flex; align-items: center; justify-content: center;">
+
+        <div class="col-4 offset-4 mx-auto">
+            <div class="card" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 1 );">
+            <div class="card-body">
+
+                        <!-- esconder a navbar-->
+                        <style>
+                        .barra {
+                        display: none;
+                            }
+                        </style>
+            <h1 class="card-title text-center mb-5">Bem-vindo de volta!</h1>
+            {% if erro %}
+                <div class="alert alert-danger">{{ erro.messageKey|trans(erro.messageData, 'security') }}</div>
+            {% endif %}
+            
+            <form action="{{ path('login') }}" method="post">
+            <input type="hidden" name="_target_path" value="/produto" />
+                        <div class="mb-3">
+                            <label for="username" class="form-label visually-hidden">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="text" class="form-control" id="username" name="_username" placeholder="Digite seu e-mail" value="{{ lastUsername }}"/>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label visually-hidden">Senha</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" class="form-control" id="password" name="_password" placeholder="Digite sua senha"/>
+                            </div>
+                        </div>
+
+                <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg" style="border-radius: 10px; background-color: #8470ff; color: black;">Entrar</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+{% endblock %}

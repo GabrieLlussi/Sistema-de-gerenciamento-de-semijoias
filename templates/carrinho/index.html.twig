@@ -1,0 +1,407 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carrinho{% endblock %}
+
+{% block body %}
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #343a40;
+    }
+
+    .table th,
+    .table td {
+        text-align: center;
+        border: 1px solid #ddd; /* Adiciona borda às células */
+        padding: 8px; /* Adiciona espaçamento interno às células */
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #343a40;
+    }
+
+    .card-text {
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    .btn-info,
+    .btn-success,
+    .btn-danger,
+    .btn-primary {
+        width: 48%; /* Reduz a largura dos botões */
+        margin-top: 10px;
+    }
+
+    .btn-group {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .total-section {
+        margin-top: 20px;
+        text-align: right;
+    }
+
+    .status-update-form {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+    {% if is_granted('ROLE_ADMIN') %}
+        <h1>Carrinho de {{usuario.nome}}</h1>
+            {% if carrinho.status == 'confirmar' %}
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Vendidos</th>
+                                <th>Valor Unitário</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set totalCarrinho = 0 %}
+                            {% set totalVendas = 0 %}
+                            {% for produto in carrinhoProduto|filter(p => p.getQuantidade + p.getVendas > 0) %}
+                                <tr>
+                                    <td>{{ produto.getIdProduto.getNome }}</td>
+                                    <td>{{ produto.getQuantidade }}</td>
+                                    <td>{{ produto.getVendas }}</td>
+                                    <td>R$ {{ produto.getIdProduto.getValor|number_format(2, ',', '.') }}</td>
+                                    <td>
+                                        R$ {{ (produto.getIdProduto.getValor * produto.getQuantidade + produto.getIdProduto.getValor * produto.getVendas)|number_format(2, ',', '.') }}
+                                        {% set totalCarrinho = totalCarrinho + (produto.getIdProduto.getValor * produto.getQuantidade) + (produto.getIdProduto.getValor * produto.getVendas) %}
+                                        {% set totalVendas = totalVendas + (produto.getIdProduto.getValor * produto.getVendas) %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div>
+                        <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+
+                        <p>Total de Vendas: R$ {{ totalVendas|number_format(2, ',', '.') }}</p>
+                        
+                    </div>
+            {% elseif carrinho.status != 'retornar' %}
+                {% if carrinho.status != 'confirmar' %}
+                    {% if carrinhoProduto is not empty and carrinhoProduto|filter(p => p.getQuantidade > 0)|length > 0 %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Valor Unitário</th>
+                                    <th>Subtotal</th>
+                                    {% if carrinho.status == 'enviar' %}
+                                        <th>Remover</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set totalCarrinho = 0 %}
+                                {% for produto in carrinhoProduto|filter(p => p.getQuantidade > 0) %}
+                                    <tr>
+                                        <td>{{ produto.getIdProduto.getNome }}</td>
+                                        <td>{{ produto.getQuantidade }}</td>
+                                        <td>R$ {{ produto.getIdProduto.getValor|number_format(2, ',', '.') }}</td>
+                                        <td>
+                                            R$ {{ (produto.getIdProduto.getValor * produto.getQuantidade)|number_format(2, ',', '.') }}
+                                            {% set totalCarrinho = totalCarrinho + (produto.getIdProduto.getValor * produto.getQuantidade) %}
+                                        </td>
+                                        {% if carrinho.status == 'enviar' %}
+                                            <td>
+                                                <form action="{{ path('remover_carrinho_adm', { 'idCarrinho': produto.getIdCarrinho.getId,'idProduto': produto.getIdProduto.getId, 'quantidade': 1 }) }}" method="post" style="display: inline-block;">
+                                                    <label for="quantidade{{ produto.getIdProduto.getId }}"></label>
+                                                    <input type="number" name="quantidade{{ produto.getIdProduto.getId }}" id="quantidade{{ produto.getIdProduto.getId }}" value="1" min="1">
+                                                    <button type="submit" class="btn btn-danger">Remover</button>
+                                                </form>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div>
+                            <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+
+                            {% if carrinho.status != 'pendente' %}
+                                {% if carrinho.status != 'confirmar' %}
+                                    <form action="{{ path('definir_status_adm', { 'id': usuario.getId }) }}" method="post">
+                                        <label for="status">Status:</label>
+                                        <select name="status" id="status">
+                                            {#<option value="0">Pendente</option>#}
+                                            {#<option value="1">Enviar</option>#}
+                                            {#<option value="2">Retornar</option>#}
+                                            {% if carrinho.status == 'enviar' %}
+                                                <option value="3">Confirmar</option>
+                                                <option value="0">Retornar</option>
+                                            {% endif %}
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <p>O carrinho está vazio.</p>
+                    {% endif %}
+                {% endif %}
+            {% elseif carrinho.status == 'retornar' %}
+                <p>Registro final do carrinho para este período.</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade vendida</th>
+                            <th>Valor Unitário</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>    
+                    <tbody>
+                        {% set totalCarrinho = 0 %}
+                        {% for logVendasItem in logVendasItems|filter(l => l.getQuantidade > 0) %}
+                            <tr>
+                                <td>{{ logVendasItem.getIdProduto.getNome }}</td>
+                                <td>{{ logVendasItem.getQuantidade }}</td>
+                                <td>R$ {{ logVendasItem.getValor|number_format(2, ',', '.') }}</td>
+                                <td>
+                                    R$ {{ (logVendasItem.getValor * logVendasItem.getQuantidade)|number_format(2, ',', '.') }}
+                                    {% set totalCarrinho = totalCarrinho + (logVendasItem.getValor * logVendasItem.getQuantidade) %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+                    <p>Comissão: R$ {{ carrinho.getIdUsuario.getComissao / 100 * totalCarrinho}} </p>
+                    <p>Total a devolver para o administrador: R$ {{ totalCarrinho -  (carrinho.getIdUsuario.getComissao / 100 * totalCarrinho)}}</p>
+
+                    <form action="{{ path('definir_status_adm', { 'id': usuario.getId }) }}" method="post">
+                        <label for="status">Status:</label>
+                        <select name="status" id="status">
+                            <option value="0">Pendente</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                    </form>
+                </div>
+            {% endif %}
+    {% elseif is_granted('ROLE_USER') %}
+        <h1>Meu Carrinho</h1>
+            {% if carrinho.status == 'retornar' %}
+                <p>O carrinho foi retornado para o administrador, aguarde até que ele libere o carrinho novamente.</p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Quantidade vendida</th>
+                            <th>Valor Unitário</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>    
+                    <tbody>
+                        {% set totalCarrinho = 0 %}
+                        {% for logVendasItem in logVendasItems|filter(l => l.getQuantidade > 0) %}
+                            <tr>
+                                <td>{{ logVendasItem.getIdProduto.getNome }}</td>
+                                <td>{{ logVendasItem.getQuantidade }}</td>
+                                <td>R$ {{ logVendasItem.getValor|number_format(2, ',', '.') }}</td>
+                                <td>
+                                    R$ {{ (logVendasItem.getValor * logVendasItem.getQuantidade)|number_format(2, ',', '.') }}
+                                    {% set totalCarrinho = totalCarrinho + (logVendasItem.getValor * logVendasItem.getQuantidade) %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div>
+                    <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+                    <p>Comissão: R$ {{ carrinho.getIdUsuario.getComissao / 100 * totalCarrinho}} </p>
+                    <p>Total a devolver para o administrador: R$ {{ totalCarrinho -  (carrinho.getIdUsuario.getComissao / 100 * totalCarrinho)}}</p>
+
+                </div>
+            {% elseif carrinho.status != 'confirmar' %}
+                {% if carrinhoProduto is not empty and carrinhoProduto|filter(p => p.getQuantidade > 0)|length > 0 %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Valor Unitário</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set totalCarrinho = 0 %}
+                            {% for produto in carrinhoProduto|filter(p => p.getQuantidade > 0) %}
+                                <tr>
+                                    <td>{{ produto.getIdProduto.getNome }}</td>
+                                    <td>{{ produto.getQuantidade }}</td>
+                                    <td>R$ {{ produto.getIdProduto.getValor|number_format(2, ',', '.') }}</td>
+                                    <td>
+                                        R$ {{ (produto.getIdProduto.getValor * produto.getQuantidade)|number_format(2, ',', '.') }}
+                                        {% set totalCarrinho = totalCarrinho + (produto.getIdProduto.getValor * produto.getQuantidade) %}
+                                    </td>
+                                    {% if carrinho.status != 'enviar' %}
+                                        {% if carrinho.status != 'retornar' %}
+                                            {% if carrinho.status != 'confirmar' %}
+                                                <td>
+                                                    <form action="{{ path('adicionar_carrinho', { 'idProduto': produto.getIdProduto.getId, 'quantidade': 1 }) }}" method="post" style="display: inline-block;">
+                                                        <label for="quantidade{{ produto.getIdProduto.getId }}"></label>
+                                                        <input type="number" name="quantidade{{ produto.getIdProduto.getId }}" id="quantidade{{ produto.getIdProduto.getId }}" value="1" min="1">
+                                                        <button type="submit" class="btn btn-success">Adicionar</button>
+                                                    </form>
+                                                    <form action="{{ path('remover_carrinho', { 'idProduto': produto.getIdProduto.getId, 'quantidade': 1 }) }}" method="post" style="display: inline-block;">
+                                                        <label for="quantidade{{ produto.getIdProduto.getId }}"></label>
+                                                        <input type="number" name="quantidade{{ produto.getIdProduto.getId }}" id="quantidade{{ produto.getIdProduto.getId }}" value="1" min="1">
+                                                        <button type="submit" class="btn btn-danger">Remover</button>
+                                                    </form>
+                                                </td>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div>
+                        <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+
+                        {% if carrinho.status != 'enviar' %}
+                            {% if carrinho.status != 'retornar' %} 
+                                {% if carrinho.status != 'confirmar' %}
+                                    <form action="{{ path('removertodos_carrinho') }}" method="post">
+                                        <button type="submit" class="btn btn-danger">Remover Todos os Produtos do Carrinho</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        
+                        {% if carrinho.status != 'enviar' %}
+                            {% if carrinho.status != 'retornar' %}
+                                {% if carrinho.status != 'confirmar' %}
+                                    <form action="{{ path('definir_status', { 'id': carrinho.id }) }}" method="post">
+                                        <label for="status">Status:</label>
+                                        <select name="status" id="status">
+                                            {#<option value="0">Pendente</option>#}
+                                            {% if carrinho.status == 'pendente' %}
+                                                <option value="1">Enviar</option>
+                                            {% endif %}
+                                            {% if carrinho.status == 'aprovado' %}
+                                                <option value="2">Retornar</option>
+                                            {% endif %}
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <p>O carrinho está vazio.</p>
+                {% endif %}
+            {% elseif carrinho.status == 'confirmar' %}
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Vendidos</th>
+                                <th>Valor Unitário</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% set totalCarrinho = 0 %}
+                            {% set totalVendas = 0 %}
+                            {% for produto in carrinhoProduto|filter(p => p.getQuantidade + p.getVendas > 0) %}
+                                <tr>
+                                    <td>{{ produto.getIdProduto.getNome }}</td>
+                                    <td>{{ produto.getQuantidade }}</td>
+                                    <td>{{ produto.getVendas }}</td>
+                                    <td>R$ {{ produto.getIdProduto.getValor|number_format(2, ',', '.') }}</td>
+                                    <td>
+                                        R$ {{ (produto.getIdProduto.getValor * produto.getQuantidade + produto.getIdProduto.getValor * produto.getVendas)|number_format(2, ',', '.') }}
+                                        {% set totalCarrinho = totalCarrinho + (produto.getIdProduto.getValor * produto.getQuantidade) + (produto.getIdProduto.getValor * produto.getVendas) %}
+                                        {% set totalVendas = totalVendas + (produto.getIdProduto.getValor * produto.getVendas) %}
+                                    </td>
+                                    <td>
+                                        <form action="{{ path('vender_produto', { 'id': produto.getIdProduto.getId, 'quantidade': 1 }) }}" method="post" style="display: inline-block;">
+                                            <label for="quantidade{{ produto.getIdProduto.getId }}"></label>
+                                            <input type="number" name="quantidade{{ produto.getIdProduto.getId }}" id="quantidade{{ produto.getIdProduto.getId }}" value="1" min="1">
+                                            <button type="submit" class="btn btn-success">Vender</button>
+                                        </form>
+                                        <form action="{{ path('devolver_produto', { 'id': produto.getIdProduto.getId, 'quantidade': 1 }) }}" method="post" style="display: inline-block;">
+                                            <label for="quantidade{{ produto.getIdProduto.getId }}"></label>
+                                            <input type="number" name="quantidade{{ produto.getIdProduto.getId }}" id="quantidade{{ produto.getIdProduto.getId }}" value="1" min="1">
+                                            <button type="submit" class="btn btn-danger">Remover</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div>
+                        <p>Total do Carrinho: R$ {{ totalCarrinho|number_format(2, ',', '.') }}</p>
+
+                        <p>Total de Vendas: R$ {{ totalVendas|number_format(2, ',', '.') }}</p>
+                        
+                        <form action="{{ path('definir_status', { 'id': carrinho.id }) }}" method="post">
+                            <label for="status">Status:</label>
+                            <select name="status" id="status">
+                                <option value="2">Retornar</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                        </form>
+                    </div>
+
+            {% endif %}
+    {% endif %}
+{% endblock %}
